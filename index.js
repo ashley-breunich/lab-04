@@ -34,6 +34,7 @@ Bitmap.prototype.parse = function(buffer) {
   console.log('file offset', this.fileOffset);
   this.numColors = buffer.readInt32LE(46);
   console.log('Number of Colors', this.numColors);
+  //need to figure out color table
 };
 
 // Bitmap.prototype.getBuffer = function() {
