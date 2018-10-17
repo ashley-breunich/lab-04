@@ -20,6 +20,8 @@ Bitmap.prototype.parse = function(buffer) {
   this.buffer = Buffer.from(buffer);
   this.type = buffer.toString('utf-8', 0, 2);
   console.log('type', this.type);
+  this.bufferLength = buffer.length;
+  console.log('Buffer Length', this.bufferLength);
   this.headerSize = buffer.readInt32LE(14);
   console.log('header size', this.headerSize);
   this.fileSize = buffer.readInt32LE(2); //read 32 bytes skipping the first two
@@ -34,9 +36,9 @@ Bitmap.prototype.parse = function(buffer) {
   console.log('file offset', this.fileOffset);
   this.numColors = buffer.readInt32LE(46);
   console.log('Number of Colors', this.numColors);
-  //need to figure out color table
+  this.colorTable = buffer.slice(108, this.numColors * 4);
+  console.log('Color Table', this.colorTable);
 };
-
 // Bitmap.prototype.getBuffer = function() {
 //   return this.buffer;
 // };
@@ -56,8 +58,7 @@ Bitmap.prototype.transform = function(operation) {
  * Pro Tip: Use "pass by reference" to alter the bitmap's buffer in place so you don't have to pass it around ...
  * @param bmp
  */
-const transformGreyscale = (bmp) => {
-  Bitmap.transform('greyscale');
+const transformGreyscale = function (bmp) {
   console.log('Transforming bitmap into greyscale', bmp);
 
   //TODO: Figure out a way to validate that the bmp instance is actually valid before trying to transform it
@@ -67,11 +68,8 @@ const transformGreyscale = (bmp) => {
   //   throw new Error('This is not a valid path.');
   // } else {
   // }
-};
-
-const printImage = (buffer) => {
-  let newBuffer = buffer;
-  return newBuffer;
+  this.colorTable.reverse();
+  return bitmap.buffer;
 };
 
 /**
@@ -80,7 +78,6 @@ const printImage = (buffer) => {
  */
 const transforms = {
   greyscale: transformGreyscale,
-  print: printImage,
 };
 
 // ------------------ GET TO WORK ------------------- //
@@ -105,6 +102,7 @@ function transformWithCallbacks() {
         throw err;
       }
       console.log(`Bitmap Transformed: ${bitmap.newFile}`);
+      // return out;
     });
 
   });
