@@ -20,6 +20,8 @@ Bitmap.prototype.parse = function(buffer) {
   this.buffer = Buffer.from(buffer);
   this.type = buffer.toString('utf-8', 0, 2);
   console.log('type', this.type);
+  this.bufferLength = buffer.length;
+  console.log('Buffer Length', this.bufferLength);
   this.headerSize = buffer.readInt32LE(14);
   console.log('header size', this.headerSize);
   this.fileSize = buffer.readInt32LE(2); //read 32 bytes skipping the first two
@@ -31,14 +33,13 @@ Bitmap.prototype.parse = function(buffer) {
   this.width = buffer.readInt32LE(18);
   console.log('width', this.width);
   this.fileOffset = buffer.readInt32LE(10);
-  console.log('file offset', this.fileOffset);
+  console.log('file offset', this.fileOffset); // 1146
   this.numColors = buffer.readInt32LE(46);
   console.log('Number of Colors', this.numColors);
+  this.colorTable = buffer.slice(1146, 15146);
+  console.log('Color Table', this.colorTable);
 };
-
-// Bitmap.prototype.getBuffer = function() {
-//   return this.buffer;
-// };
+let slicedArray = this.colorTable;
 
 /**
  * Transform a bitmap using some set of rules. The operation points to some function, which will operate on a bitmap instance
@@ -55,22 +56,17 @@ Bitmap.prototype.transform = function(operation) {
  * Pro Tip: Use "pass by reference" to alter the bitmap's buffer in place so you don't have to pass it around ...
  * @param bmp
  */
-const transformGreyscale = (bmp) => {
-  Bitmap.transform('greyscale');
-  console.log('Transforming bitmap into greyscale', bmp);
-
+const transformReverse = function (bmp) {
+  console.log('Transforming bitmap into reverse', bmp);
   //TODO: Figure out a way to validate that the bmp instance is actually valid before trying to transform it
 
-  // if (fs.existsSync(bmp) === false) {
-  //   console.error ('This is not a valid path.');
-  //   throw new Error('This is not a valid path.');
-  // } else {
-  // }
-};
-
-const printImage = (buffer) => {
-  let newBuffer = buffer;
-  return newBuffer;
+  if (fs.existsSync(bmp) === false) {
+    console.error ('This is not a valid path.');
+    throw new Error('This is not a valid path.');
+  } else {
+    slicedArray.reverse();
+    return bmp;
+  }
 };
 
 /**
@@ -78,8 +74,7 @@ const printImage = (buffer) => {
  * Each property represents a transformation that someone could enter on the command line and then a function that would be called on the bitmap to do this job
  */
 const transforms = {
-  greyscale: transformGreyscale,
-  print: printImage,
+  reverse: transformReverse,
 };
 
 // ------------------ GET TO WORK ------------------- //
@@ -104,6 +99,7 @@ function transformWithCallbacks() {
         throw err;
       }
       console.log(`Bitmap Transformed: ${bitmap.newFile}`);
+      // return out;
     });
 
   });
