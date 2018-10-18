@@ -33,15 +33,13 @@ Bitmap.prototype.parse = function(buffer) {
   this.width = buffer.readInt32LE(18);
   console.log('width', this.width);
   this.fileOffset = buffer.readInt32LE(10);
-  console.log('file offset', this.fileOffset);
+  console.log('file offset', this.fileOffset); // 1146
   this.numColors = buffer.readInt32LE(46);
   console.log('Number of Colors', this.numColors);
-  this.colorTable = buffer.slice(108, this.numColors * 4);
+  this.colorTable = buffer.slice(1146, 15146);
   console.log('Color Table', this.colorTable);
 };
-// Bitmap.prototype.getBuffer = function() {
-//   return this.buffer;
-// };
+let slicedArray = this.colorTable;
 
 /**
  * Transform a bitmap using some set of rules. The operation points to some function, which will operate on a bitmap instance
@@ -58,18 +56,17 @@ Bitmap.prototype.transform = function(operation) {
  * Pro Tip: Use "pass by reference" to alter the bitmap's buffer in place so you don't have to pass it around ...
  * @param bmp
  */
-const transformGreyscale = function (bmp) {
-  console.log('Transforming bitmap into greyscale', bmp);
-
+const transformReverse = function (bmp) {
+  console.log('Transforming bitmap into reverse', bmp);
   //TODO: Figure out a way to validate that the bmp instance is actually valid before trying to transform it
 
-  // if (fs.existsSync(bmp) === false) {
-  //   console.error ('This is not a valid path.');
-  //   throw new Error('This is not a valid path.');
-  // } else {
-  // }
-  this.colorTable.reverse();
-  return bitmap.buffer;
+  if (fs.existsSync(bmp) === false) {
+    console.error ('This is not a valid path.');
+    throw new Error('This is not a valid path.');
+  } else {
+    slicedArray.reverse();
+    return bmp;
+  }
 };
 
 /**
@@ -77,7 +74,7 @@ const transformGreyscale = function (bmp) {
  * Each property represents a transformation that someone could enter on the command line and then a function that would be called on the bitmap to do this job
  */
 const transforms = {
-  greyscale: transformGreyscale,
+  reverse: transformReverse,
 };
 
 // ------------------ GET TO WORK ------------------- //

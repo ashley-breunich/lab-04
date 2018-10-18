@@ -22,55 +22,40 @@ For this assignment you will be building a bitmap (`.bmp`) transformer CLI. It w
   * What structure should you use to most easily export?
   * How best can we make this scale?
 
-**Stretch Goal - Refactor to use promises**
-
-#### Minimum Requirements
-* The CLI should be architected using best modularization practices
-* The CLI should require two arguments `input-file-path transfrom-name`
-* The CLI should support a minimum of four transforms
-* The CLI should log useful Error messages if used incorrectly
-* The CLI should log a success message on completion
-
-## Testing 
-* Use BDD `describe` and `test` methods to define discriptive tests and increase readablity
-* Each `test` callback should aim to test a small well defined feature of a function
-* Write tests to ensure each function behaves correctly with valid and invalud inputs
-* The CLI should be tested without using `child_process` or any equivilant third party librarys
-
 ##  Documentation
-In your README.md describe the exported values of each module you have defined. Every function description should include it's airty (expected number of paramiters), the expected data for each paramiter (data-type and limitations), and it's behavior (for both valid and invalued use). Feel free to write any additional information in your README.md.
 
-Note that there are few places in the starter code (TODO's) that call upon you to reflect on what the code is doing. Please add these notes to your doucmentation as well.
+Unfortunately, I have not been able to get the transformation function to work. It reads the file and, I believe, goes through the transformation, but just spits out the same image as before in the new file. I don't think I am passing through the correct paramater in the transformReverse function. 
 
-###### Strategy
-You will want to define a strategy for solving the problem before you begin to code. Once you have a strategy defined, you can break it into steps that can be split into helper modules. Each helper module should solve a small specific problem. The main module should utilize the helper modules to execute your original stratagy.
+#### Function Breakdown 
 
-1. Gather user input (infile and transform)
-1. Read the input bitmap file using the fs module
-1. Parse the bitmap's buffer into object represeting a bitmap (using a constructor)
-1. Using metadata from the parsed bitmap object run a transform on the buffer directly (mutate the color or raster data)
-1. Write the mutated buffer to the output file path
+###### Bitmap():
+Airty: 1,
+Data: Buffer - Array, 
+Behavior: It's a constructor function that saves the file path to the this.file variable. 
 
-## Starter Code
-You've been provided with starter code that implements the basic wiring of the above strategy.
-* The index.js file reads the file and creates a bitmap instance that can `parse()` and `transform()`
-* The parsing ahas been left to you
-* A sample (yet non-functional) transformation has been provided.
-* No tests have been written, you'll need to implement those
+###### Bitmap.parse():
+Airty: 1,
+Data: File Name (entered in the command line) - String, 
+Behavior: It parses the buffer so that we can use different parts of it for the transformations. 
 
-###### Transfrom Ideas
-* Color Pallet Transforms 
-  * Invert 
-  * Randomize
-  * Black and White
-  * Darken or Lighten
-  * Add or Mutiply a Hue
-  * Add or Subtract Contrast
-  
-* Raster Data Transforms
-  * Pixilate
-  * Add a border
-  * Add a watermark
-  * Vertically or Horizontaly Filp
-  * Verticaly or Horizontaly Mirror
-  * Verticaly or Horizontaly Stretch
+###### Bitmap.transform():
+Airty: 1,
+Data: Type of Operation - String,
+Behavior: This will call the correct transformation function and then sets the new file path to a concatenated string.
+
+###### transformReverse():
+Airty: 1,
+Data: The bitmap - Array, 
+Behavior: This is where the actual transformation of the array happens. The output is a new array of data.  
+
+###### transformWithCallbacks():
+Airty: 0,
+Behavior: This is where everything happens! The file is read, then the buffer is parsed, then the bitmap is transformed accordingly, and finally, the new bitmap is written. The output will be a new bitmap file (so an array of data).
+
+#### Answering TODO at the bottom
+The process.argv.slice(2) section of the code is an important one. The argv array contains everything on the command line. The first item is the path to node and the second item is the path to the script for the program you are running. When you slice it at the the second index, you are discarding both of these and just returning everything else. We set both file and operation to this sliced array of data. 
+
+It then instantiates a new Bitmap instance with the file and sets that to the variable bitmap. Then, it calls the transformWithCallbacks function which begins the read file process. 
+
+#### Time Spent
+I spent around 12 hours working on this lab - reading all the documentation, researching ideas, and trying different things out. 
