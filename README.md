@@ -24,7 +24,11 @@ For this assignment you will be building a bitmap (`.bmp`) transformer CLI. It w
 
 ##  Documentation
 
+10.17.18
 Unfortunately, I have not been able to get the transformation function to work. It reads the file and, I believe, goes through the transformation, but just spits out the same image as before in the new file. I don't think I am passing through the correct paramater in the transformReverse function. 
+
+10.18.18
+Hai helped me get my code working. I played around with a transformation function - it isn't doing what I want it to quite yet but it is transforming the image with wavy lines!! 
 
 #### Function Breakdown 
 
@@ -43,14 +47,14 @@ Airty: 1,
 Data: Type of Operation - String,
 Behavior: This will call the correct transformation function and then sets the new file path to a concatenated string.
 
-###### transformReverse():
+###### transformWaves():
 Airty: 1,
 Data: The bitmap - Array, 
-Behavior: This is where the actual transformation of the array happens. The output is a new array of data.  
+Behavior: This is where the actual transformation of the array happens. After it is transformed, the new file is written. The output is a new array of data.  
 
 ###### transformWithCallbacks():
 Airty: 0,
-Behavior: This is where everything happens! The file is read, then the buffer is parsed, then the bitmap is transformed accordingly, and finally, the new bitmap is written. The output will be a new bitmap file (so an array of data).
+Behavior: The file is read, then the buffer is parsed, and then the bitmap is transformed accordingly. I am not sure what the output is here, to be honest. 
 
 #### Answering TODO at the bottom
 The process.argv.slice(2) section of the code is an important one. The argv array contains everything on the command line. The first item is the path to node and the second item is the path to the script for the program you are running. When you slice it at the the second index, you are discarding both of these and just returning everything else. We set both file and operation to this sliced array of data. 
